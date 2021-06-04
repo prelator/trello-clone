@@ -1,0 +1,21 @@
+<div class="card-body">
+  <p class=card-text>
+    {{model.text}}
+  </p>
+  <form *ngIf="isEditMode">
+    <div class="form-group">
+      <label for="categorySelect">Select Category:</label>
+      <select class="form-control" id="categorySelect" [(ngModel)]="updatedCategory"  name="cardCategory">
+        <option *ngFor="let category of categories">{{category}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="cardText">Card Text:</label>
+      <textarea class="form-control" id="cardText" rows="3" [(ngModel)]="updatedText" name="cardText" required></textarea>
+    </div>
+    <button type="button" class="btn btn-primary" aria-label="Edit" (click)="saveChanges()">Save</button>
+  </form>
+
+  <button *ngIf="!isEditMode" type="button" class="btn btn-primary" aria-label="Edit" (click)="editCard()">Edit</button>
+  <button *ngIf="!isEditMode" type="button" class="btn btn-danger" aria-label="Delete" (click)="deleteCard()">Delete</button>
+</div>
