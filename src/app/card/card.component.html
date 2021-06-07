@@ -1,12 +1,12 @@
 <div class="card-body">
-  <p class=card-text>
+  <p *ngIf="!isEditMode" class=card-text>
     {{model.text}}
   </p>
   <form *ngIf="isEditMode">
     <div class="form-group">
       <label for="categorySelect">Select Category:</label>
       <select class="form-control" id="categorySelect" [(ngModel)]="updatedCategory"  name="cardCategory">
-        <option *ngFor="let category of categories">{{category}}</option>
+        <option *ngFor="let category of getCategories()">{{category}}</option>
       </select>
     </div>
     <div class="form-group">
@@ -14,6 +14,7 @@
       <textarea class="form-control" id="cardText" rows="3" [(ngModel)]="updatedText" name="cardText" required></textarea>
     </div>
     <button type="button" class="btn btn-primary" aria-label="Edit" (click)="saveChanges()">Save</button>
+    <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="cancelChanges()">Cancel</button>
   </form>
 
   <button *ngIf="!isEditMode" type="button" class="btn btn-primary" aria-label="Edit" (click)="editCard()">Edit</button>

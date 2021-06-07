@@ -1,7 +1,7 @@
 <ng-template #createCardModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Create New Card</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Close button click')">
+    <button type="button" class="btn btn-light close" aria-label="Close" (click)="modal.dismiss('Close button click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -11,7 +11,7 @@
       <div class="form-group">
         <label for="categorySelect">Select Category:</label>
         <select class="form-control" id="categorySelect" [(ngModel)]="newCardCategory"  name="newCardCategory">
-          <option *ngFor="let category of categories">{{category}}</option>
+          <option *ngFor="let category of getCategories()">{{category}}</option>
         </select>
       </div>
       <div class="form-group">
@@ -21,7 +21,28 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save button click')">Save</button>
+    <button type="button" class="btn btn-primary" (click)="modal.close('Save button click')">Save</button>
+  </div>
+</ng-template>
+
+<ng-template #createCategoryModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Create New Category</h4>
+    <button type="button" class="btn btn-light close" aria-label="Close" (click)="modal.dismiss('Close button click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Enter category name below to create a new category.</p>
+    <form>
+      <div class="form-group">
+        <label for="cardText">Category Name:</label>
+        <textarea class="form-control" id="cardText" rows="3" [(ngModel)]="newCatName" name="newCatName" required></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close('Save button click')">Save</button>
   </div>
 </ng-template>
 
@@ -29,8 +50,11 @@
 <nav class="navbar navbar-expand-sm navbar-light bg-info static-top">
   <div class="container">
     <a class="navbar-brand" href="/">{{title}}</a>
-    <button (click)="openModal(createCardModal)" class="btn btn-success" type="button">
+    <button (click)="openCardModal(createCardModal)" class="btn btn-success" type="button">
       New Card
+    </button>
+    <button (click)="openCategoryModal(createCategoryModal)" class="btn btn-success" type="button">
+      New Category
     </button>
   </div>
 </nav>

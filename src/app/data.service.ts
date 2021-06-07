@@ -19,6 +19,13 @@ export class Category {
     return this.name;
   }
 
+  public setName (name: string) {
+    this.name = name;
+    this.children.forEach(card => {
+      card.setCategory(this.name);
+    });
+  }
+
   public getChildren () {
     return this.children;
   }
@@ -93,6 +100,18 @@ export class DataService {
     })
   }
 
+  public createCategory (name: string) {
+    const newCat = new Category(name);
+    this.categoryList.push(newCat);
+  }
+
+  public deleteCategory (category: Category) {
+    const matchingCatIndex = this.categoryList.indexOf(category);
+    if (matchingCatIndex !== -1) {
+      this.categoryList.splice(matchingCatIndex, 1);
+    }
+  }
+
   public createCard (text:string = '', category:string = '') {
     const card = new Card(text, category, this.lastCardId + 1);
     this.lastCardId = card.id;
@@ -106,12 +125,12 @@ export class DataService {
 
   public updateCard (card: Card, updatedText:string = '', updatedCategory:string = '') {
     if (card.text !== updatedText) {
-      card.text = updatedText;
+      card.setText(updatedText);
     }
     if (card.category !== updatedCategory) {
       const oldMatchingCategory = this.categoryList.find(cat => cat.name === card.category);
       const newMatchingCategory = this.categoryList.find(cat => cat.name === updatedCategory);
-      card.category = updatedCategory;
+      card.setCategory(updatedCategory);
       oldMatchingCategory?.removeChild(card);
       newMatchingCategory?.addChild(card);
     }

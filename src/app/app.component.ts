@@ -12,23 +12,38 @@ export class AppComponent {
   title = 'Trello Clone';
 
   closeResult;
-  categories = this._dataService.getCategoryNames();
-  newCardCategory = this.categories[0];
+  newCardCategory = this.getCategories()[0];
   newCardText = '';
+  newCatName = '';
 
   constructor (private modalService: NgbModal, private _dataService: DataService) {}
 
-  openModal (content) {
+  openCardModal (content) {
     this.modalService.open(content, {ariaLabelledBy: 'card-modal'}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
-      console.log(`${this.closeResult}, ${this.newCardCategory}, ${this.newCardText}`);
       this._dataService.createCard(this.newCardText, this.newCardCategory);
-      this.resetModal();
+      this.resetCardModal();
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
       console.log(this.closeResult);
-      this.resetModal();
+      this.resetCardModal();
     });
+  }
+
+  openCategoryModal (content) {
+    this.modalService.open(content, {ariaLabelledBy: 'category-modal'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+      this._dataService.createCategory(this.newCatName);
+      this.resetCategoryModal();
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      console.log(this.closeResult);
+      this.resetCategoryModal();
+    });
+  }
+
+  getCategories () {
+    return this._dataService.getCategoryNames();
   }
 
   private getDismissReason(reason: any): string {
@@ -41,8 +56,12 @@ export class AppComponent {
     }
   }
 
-  private resetModal() {
-    this.newCardCategory = this.categories[0];
+  private resetCardModal() {
+    this.newCardCategory = this.getCategories()[0];
     this.newCardText = '';
+  }
+
+  private resetCategoryModal() {
+    this.newCatName = '';
   }
 }

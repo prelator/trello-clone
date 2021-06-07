@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Category } from '../data.service';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-category',
@@ -7,5 +8,28 @@ import { Category } from '../data.service';
   styleUrls: ['./category.component.sass']
 })
 export class CategoryComponent {
-  @Input() model!: Category
+  constructor (private _dataService: DataService) { }
+
+  @Input() model!: Category;
+  isEditMode = false;
+  updatedName;
+
+  deleteCategory () {
+    this._dataService.deleteCategory(this.model);
+  }
+
+  editCategory () {
+    this.isEditMode = true;
+    this.updatedName = this.model.name;
+  }
+
+  saveChanges () {
+    this.model.setName(this.updatedName);
+    this.isEditMode = false;
+  }
+
+  cancelChanges () {
+    this.isEditMode = false;
+    this.updatedName = this.model.name;
+  }
 }

@@ -13,7 +13,6 @@ export class CardComponent {
 
   @Input() model!: Card
 
-  categories = this._dataService.getCategoryNames();
   isEditMode = false;
   updatedCategory;
   updatedText;
@@ -31,5 +30,15 @@ export class CardComponent {
   saveChanges () {
     this.isEditMode = false;
     this._dataService.updateCard(this.model, this.updatedText, this.updatedCategory)
+  }
+
+  cancelChanges () {
+    this.isEditMode = false;
+    this.updatedCategory = this.model.category;
+    this.updatedText = this.model.text;
+  }
+
+  getCategories () {
+    return this._dataService.getCategoryNames();
   }
 }
