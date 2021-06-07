@@ -24,7 +24,7 @@ export class CategoryComponent {
   }
 
   saveChanges () {
-    this.model.setName(this.updatedName);
+    this._dataService.updateCategory(this.model, this.updatedName);
     this.isEditMode = false;
   }
 

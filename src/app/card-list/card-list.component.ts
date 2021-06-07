@@ -14,7 +14,6 @@ export class CardListComponent implements OnInit {
 
   ngOnInit() {
     this.categories = this._dataService.getCategories();
-    console.log(this.categories);
   }
 
 }

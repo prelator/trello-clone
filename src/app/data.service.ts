@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 
+// Category class
+
 export class Category {
 
   name;
@@ -15,19 +17,11 @@ export class Category {
     ];
   }
 
-  public getName () {
-    return this.name;
-  }
-
   public setName (name: string) {
     this.name = name;
     this.children.forEach(card => {
       card.setCategory(this.name);
     });
-  }
-
-  public getChildren () {
-    return this.children;
   }
 
   public addChild (card:Card) {
@@ -39,6 +33,8 @@ export class Category {
     this.children.splice(cardIndex, 1);
   }
 }
+
+// Card class
 
 export class Card {
 
@@ -52,22 +48,16 @@ export class Card {
     this.id = id;
   }
 
-  public getText () {
-    return this.text;
-  }
-
   public setText (text:string) {
     this.text = text;
-  }
-
-  public getCategory () {
-    return this.category;
   }
 
   public setCategory (category:string) {
     this.category = category;
   }
 }
+
+// Data Service
 
 export class DataService {
   private categoryList:Category[] = [];
@@ -76,6 +66,22 @@ export class DataService {
   constructor () {}
 
   private populateCategories () {
+    const cachedList: string | null = localStorage.getItem('db');
+    if (cachedList) {
+      const parsedList = JSON.parse(cachedList);
+      if (parsedList.length) {
+        this.categoryList = parsedList.map(cat => {
+          let category = new Category(cat.name);
+          cat.children.forEach(child => {
+            let card = new Card(child.text, child.category, child.id);
+            category.addChild(card);
+          });
+          return category;
+        });
+        return;
+      }
+    }
+
     this.categoryList = [
       new Category('To Do'),
       new Category('In Progress'),
@@ -84,6 +90,7 @@ export class DataService {
 
     this.createCard('Do something and then something else.', 'To Do');
     this.createCard('Do all the things.', 'In Progress');
+    localStorage.setItem('db', JSON.stringify(this.categoryList));
   }
 
   public getCategories () {
@@ -100,9 +107,17 @@ export class DataService {
     })
   }
 
+  // Category operations
+
   public createCategory (name: string) {
     const newCat = new Category(name);
     this.categoryList.push(newCat);
+    localStorage.setItem('db', JSON.stringify(this.categoryList));
+  }
+
+  public updateCategory (category: Category, name: string) {
+    category.setName(name);
+    localStorage.setItem('db', JSON.stringify(this.categoryList));
   }
 
   public deleteCategory (category: Category) {
@@ -110,7 +125,10 @@ export class DataService {
     if (matchingCatIndex !== -1) {
       this.categoryList.splice(matchingCatIndex, 1);
     }
+    localStorage.setItem('db', JSON.stringify(this.categoryList));
   }
+
+  // Card operations
 
   public createCard (text:string = '', category:string = '') {
     const card = new Card(text, category, this.lastCardId + 1);
@@ -121,6 +139,7 @@ export class DataService {
     } else {
       console.error(`Invalid category for new card: ${category}`)
     }
+    localStorage.setItem('db', JSON.stringify(this.categoryList));
   }
 
   public updateCard (card: Card, updatedText:string = '', updatedCategory:string = '') {
@@ -134,11 +153,13 @@ export class DataService {
       oldMatchingCategory?.removeChild(card);
       newMatchingCategory?.addChild(card);
     }
+    localStorage.setItem('db', JSON.stringify(this.categoryList));
   }
 
   public deleteCard (card: Card) {
     const matchingCategory = this.categoryList.find(cat => cat.name === card.category);
     matchingCategory?.removeChild(card);
+    localStorage.setItem('db', JSON.stringify(this.categoryList));
   }
 
 }
